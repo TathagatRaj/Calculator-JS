@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <title>Calculator</title>
+    <style>
+        @font-face {
+            font-family: myFont1;
+            src: url(font5.ttf);
+        }
+
+        @font-face {
+            font-family: myMode1;
+            src: url(mode1.otf);
+        }
+
+        body {
+            background-color: rgb(31, 30, 30);
+        }
+
+        .container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        button {
+            background-color: gray;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            background-color: rgb(78, 78, 78);
+        }
+
+        #Heading {
+            color: white;
+            font-size: 40px;
+            font-family: myFont1;
+        }
+
+        #Settings {
+            color: white;
+            font-family: myMode1;
+        }
+
+        #History {
+            background-color: transparent;
+        }
+
+        #Answers {
+            background-color: rgb(20, 20, 20);
+            border: 1px solid black;
+            box-shadow: inset 0px 0px 4px black;
+            color: white;
+            font-size: 20px;
+            resize: none;
+        }
+
+        #Answers:focus {
+            outline: none;
+        }
+
+        #errorArise {
+            color: rgb(207, 14, 14);
+            font-size: 16px;
+            visibility: hidden;
+        }
+
+        #HistoryArea {
+            background-color: rgb(34, 33, 33);
+            border: 1px solid gray;
+            resize: none;
+            color: rgb(255, 255, 255);
+            font-size: 15px;
+        }
+
+        #HistoryArea:focus{
+            outline: none;
+        }
+
+    </style>
+</head>
+<body id="body">
+    <div class="container-fluid pe-4">
+        <div class="row justify-content-center">
+            <div class="col-9 p-0">
+                <div class="row justify-content-center mb-4 mt-3">
+                    <div class="col-12 text-center" id="Heading">
+                        <p class="m-0" id="Calci">CALCULATOR</p>
+                    </div>
+                </div>
+                <div class="row justify-content-center px-xxl-5 px-4 mb-4" id="Settings">
+                    <div class="col-md-9 col-8 d-flex align-items-center p-0">
+                        <span id="mode">
+                            Mode :
+                        </span>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="darkMode" onclick="DarkMode()" checked>
+                            <label class="form-check-label" for="darkMode"><span id="darkLabel">Dark</span></label>
+                        </div>
+                        <div class="form-check ms-4">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="lightMode" onclick="LightMode()">
+                            <label class="form-check-label" for="lightMode"><span id="lightLabel">Light</span></label>
+                        </div>    
+                    </div>
+                    <div class="col-md-2 col-3 text-end p-0">
+                        <button class="rounded-2 py-2" type="button" id="History" onclick="showHistory()">History &nbsp<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-history" id="historyIcon" viewBox="0 0 16 16">
+                            <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                            <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                            <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                          </svg></button>
+                    </div>
+                </div>
+                <div class="row justify-content-center px-xxl-4 px-xl-4 px-md-3 px-2 mb-1" id="AnsArea">
+                     <textarea class="col-11 rounded-2" rows="2" id="Answers" readonly></textarea>
+                </div>
+                <div class="row justify-content-center mb-3" id="errorArise">
+                    <p class="col-11 ps-xxl-4">* Malformed expression</p>
+                </div>
+                <div class="row justify-content-center" id="functions">
+                    <button class="col-2 rounded-2 m-1 p-2" id="fnClear">AC</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnBackspace"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-backspace" id="backspace" viewBox="0 0 16 16">
+                        <path d="M5.83 5.146a.5.5 0 0 0 0 .708L7.975 8l-2.147 2.146a.5.5 0 0 0 .707.708l2.147-2.147 2.146 2.147a.5.5 0 0 0 .707-.708L9.39 8l2.146-2.146a.5.5 0 0 0-.707-.708L8.683 7.293 6.536 5.146a.5.5 0 0 0-.707 0z"/>
+                        <path d="M13.683 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7.08a2 2 0 0 1-1.519-.698L.241 8.65a1 1 0 0 1 0-1.302L5.084 1.7A2 2 0 0 1 6.603 1zm-7.08 1a1 1 0 0 0-.76.35L1 8l4.844 5.65a1 1 0 0 0 .759.35h7.08a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
+                        </svg>
+                    </button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnLeftBracket">(</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnRightBracket">)</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnPi">π</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnSin">Sin</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnCos">Cos</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnTan">Tan</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnLog">Log</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnRoot">√</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn7">7</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn8">8</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn9">9</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnDivide">÷</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnPower">x<sup>2</sup></button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn4">4</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn5">5</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fn6">6</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnMultiply">x</button>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnPercentage">%</button>
+                    <div class="col-2 m-1">
+                        <div class="row">
+                            <button class="col-12 rounded-2 mb-2 p-2 workinFn" id="fn1">1</button>
+                            <button class="col-12 rounded-2 p-2 workinFn" id="fn0">0</button>
+                        </div>
+                    </div>
+                    <div class="col-2 m-1">
+                        <div class="row">
+                            <button class="col-12 rounded-2 mb-2 p-2 workinFn" id="fn2">2</button>
+                            <button class="col-12 rounded-2 p-2 workinFn" id="fn00">00</button>
+                        </div>
+                    </div>
+                    <div class="col-2 m-1">
+                        <div class="row">
+                            <button class="col-12 rounded-2 mb-2 p-2 workinFn" id="fn3">3</button>
+                            <button class="col-12 rounded-2 p-2 workinFn" id="fnDecimal">.</button>
+                        </div>
+                    </div>
+                    <div class="col-2 m-1">
+                        <div class="row">
+                            <button class="col-12 rounded-2 mb-2 p-2 workinFn" id="fnSubtract">-</button>
+                            <button class="col-12 rounded-2 p-2 workinFn" id="fnAdd" onclick="myAdd()">+</button>
+                        </div>
+                    </div>
+                    <button class="col-2 rounded-2 m-1 p-2 workinFn" id="fnEqual">=</button>            
+                </div>
+            </div>
+            <div class="col-3 p-0 mt-3" id="TheBox">
+                <textarea class="col-12 rounded-2 p-2" rows="24" id="HistoryArea" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const body = document.getElementById("body");
+        const Calci = document.getElementById("Calci");
+        const mode = document.getElementById("mode");
+        const darkMode = document.getElementById("darkMode");
+        const lightMode = document.getElementById("lightMode")
+        const history = document.getElementById("History");
+        const Answers = document.getElementById("Answers");
+        // const backspace = document.getElementById("backspace");
+        const workinFn = document.getElementsByClassName("workinFn");
+        const darkLabel = document.getElementById("darkLabel");
+        const lightLabel = document.getElementById("lightLabel");
+        const fnClear = document.getElementById("fnClear");
+        const fnBackspace = document.getElementById("fnBackspace");
+        const fnLeftBracket = document.getElementById("fnLeftBracket");
+        const fnRightBracket = document.getElementById("fnRightBracket");
+        const fnPi = document.getElementById("fnPi");
+        const fnSin = document.getElementById("fnSin");
+        const fnCos = document.getElementById("fnCos");
+        const fnTan = document.getElementById("fnTan");
+        const fnLog = document.getElementById("fnLog");
+        const fnRoot = document.getElementById("fnRoot");
+        const fn9 = document.getElementById("fn9");
+        const fn8 = document.getElementById("fn8");
+        const fn7 = document.getElementById("fn7");
+        const fn6 = document.getElementById("fn6");
+        const fn5 = document.getElementById("fn5");
+        const fn4 = document.getElementById("fn4");
+        const fn3 = document.getElementById("fn3");
+        const fn2 = document.getElementById("fn2");
+        const fn1 = document.getElementById("fn1");
+        const fn0 = document.getElementById("fn0");
+        const fn00 = document.getElementById("fn00");
+        const fnDivide = document.getElementById("fnDivide");
+        const fnPower = document.getElementById("fnPower");
+        const fnMultiply = document.getElementById("fnMultiply");
+        const fnPercentage = document.getElementById("fnPercentage");
+        const fnDecimal = document.getElementById("fnDecimal");
+        const fnSubtract = document.getElementById("fnSubtract");
+        const fnAdd = document.getElementById("fnAdd");
+        const fnEqual = document.getElementById("fnEqual");
+        const error = document.getElementById("error");
+        const TheBox = document.getElementById("TheBox");
+        const HistoryArea = document.getElementById("HistoryArea");
+        
+        let isResultDisplayed = false;
+        let fn = [fn0,fn1,fn2,fn3,fn4,fn5,fn6,fn7,fn8,fn9];
+        let fnFunction = [fnLeftBracket,fnRightBracket,fnPi,fnSin,fnCos,fnTan,fnLog,fnRoot,fnDivide,fnPower,fnMultiply,fnPercentage,fnDecimal,fnAdd,fnSubtract];
+        let fnValue = ["(",")","3.141592654","sin","cos","tan","log","√","÷"," to the power 2","x","%",".","+","-"];
+        let ids = [Calci,mode,darkLabel,lightLabel,history,Answers];
+
+        function LightMode() {
+            body.style.backgroundColor = "white";
+            darkMode.style.borderColor = "black";
+            lightMode.style.borderColor = "black";
+            Answers.style.backgroundColor = "rgb(236, 236, 236)"; 
+            Answers.style.border = "1px solid rgb(170, 169, 169)";
+            Answers.style.boxShadow = "inset 0px 0px 4px rgb(170, 169, 169)";
+            HistoryArea.style.backgroundColor = "rgb(212, 212, 212)";
+            HistoryArea.style.border = "1px solid gray";
+            HistoryArea.style.color = "rgb(54, 54, 54)";
+            for (let i = 0; i < ids.length; i++) {
+                ids[i].style.color = "black";
+            }
+        }
+
+        function DarkMode() {
+            body.style.backgroundColor = "rgb(31, 30, 30)";
+            darkMode.style.borderColor = "transparent";
+            lightMode.style.borderColor = "transparent";
+            Answers.style.backgroundColor = "rgb(20, 20, 20)"; 
+            Answers.style.border = " 1px solid black";
+            Answers.style.boxShadow = "inset 0px 0px 4px black";
+            HistoryArea.style.backgroundColor = "rgb(34, 33, 33)";
+            HistoryArea.style.border = "1px solid rgb(73, 73, 73)";
+            HistoryArea.style.color = "rgb(255, 255, 255)";
+            for (let i = 0; i < ids.length; i++) {
+                ids[i].style.color = "white";
+            }
+        }
+
+        fnClear.onclick = function() {
+            Answers.value = "";
+            isResultDisplayed = false;
+        }
+
+        fnBackspace.onclick = function() {
+            const value = Answers.value;
+            const trigno = value.slice(-3);
+            const pow = value.slice(-15);
+            if (trigno === "sin"||trigno === "cos"||trigno === "tan"||trigno === "log") {
+                Answers.value = Answers.value.substring(0,Answers.value.length - 3);
+            } 
+            else if (pow === " to the power 2") {
+                Answers.value = Answers.value.substring(0,Answers.value.length - 15);
+            }
+            else {
+                Answers.value = Answers.value.substring(0,Answers.value.length - 1); 
+            }
+            isResultDisplayed = false;
+        }
+
+        fn00.onclick = function() {
+            if (isResultDisplayed) {
+                Answers.value = "00";
+                isResultDisplayed = false;
+            } else {
+                Answers.value += "00";
+            }
+        }
+
+        for (let i = 0; i < fn.length; i++) {
+            fn[i].onclick = function() {
+                if (isResultDisplayed) {
+                    Answers.value = `${i}`;
+                    isResultDisplayed = false;
+                } else {
+                    Answers.value += `${i}`;
+                }
+            }
+        }
+
+        for(let i = 0; i < fnFunction.length; i++) {
+            fnFunction[i].onclick = function() {
+                Answers.value += fnValue[i];
+                isResultDisplayed = false;
+            }
+        }
+
+        fnEqual.onclick = function() {
+            Answers.value = Result();
+            isResultDisplayed = true;
+        }
+        
+        function Result() {
+        try {
+            let expression = Answers.value;
+    
+            expression = expression.replace(/÷/g, '/');
+            expression = expression.replace(/x/g, '*');
+            expression = expression.replace(/√/g, 'Math.sqrt');
+            expression = expression.replace(/π/g, 'Math.PI');
+            expression = expression.replace(/sin/g, 'Math.sin');
+            expression = expression.replace(/cos/g, 'Math.cos');
+            expression = expression.replace(/tan/g, 'Math.tan');
+            expression = expression.replace(/log/g, 'Math.log10');
+            expression = expression.replace(/%/g, '/100');
+            expression = expression.replace(/ to the power 2/g, '**2')
+    
+            let result = eval(expression);
+            let history_data = "• " + Answers.value + "  =  " + result;
+            HistoryArea.innerHTML += history_data + '\n';
+
+            return result;
+        } catch (err) {
+                errorArise.style.visibility = 'visible';
+            setTimeout(() => {
+                errorArise.style.visibility = 'hidden';
+            }, 2000);
+            return '';
+        }
+        }
+    
+        TheBox.style.display = "none";
+        var historyShow = true;
+
+        function show() {
+            TheBox.style.display = "block";
+        }
+
+        function hide() {
+            TheBox.style.display = "none";
+        }
+
+        function showHistory() {
+           if (historyShow) show();
+           else hide();
+           historyShow = !historyShow;
+        }      
+    </script>
+</body>
+</html>
