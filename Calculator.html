@@ -187,7 +187,6 @@
         const lightMode = document.getElementById("lightMode")
         const history = document.getElementById("History");
         const Answers = document.getElementById("Answers");
-        // const backspace = document.getElementById("backspace");
         const workinFn = document.getElementsByClassName("workinFn");
         const darkLabel = document.getElementById("darkLabel");
         const lightLabel = document.getElementById("lightLabel");
@@ -319,14 +318,21 @@
     
             expression = expression.replace(/÷/g, '/');
             expression = expression.replace(/x/g, '*');
-            expression = expression.replace(/√/g, 'Math.sqrt');
+            expression = expression.replace(/√(\w+)/g, 'Math.sqrt($1)');
             expression = expression.replace(/π/g, 'Math.PI');
-            expression = expression.replace(/sin/g, 'Math.sin');
-            expression = expression.replace(/cos/g, 'Math.cos');
-            expression = expression.replace(/tan/g, 'Math.tan');
-            expression = expression.replace(/log/g, 'Math.log10');
+            expression = expression.replace(/log(\w+)/g, 'Math.log10($1)');
             expression = expression.replace(/%/g, '/100');
-            expression = expression.replace(/ to the power 2/g, '**2')
+            expression = expression.replace(/ to the power 2/g, '**2');
+            expression = expression.replace(/sin(\d+)/g, function(match, p1) {
+                return `Math.sin(${p1} * Math.PI / 180)`;
+            });
+            expression = expression.replace(/cos(\d+)/g, function(match, p1) {
+                return `Math.cos(${p1} * Math.PI / 180)`;
+            });
+            expression = expression.replace(/tan(\d+)/g, function(match, p1) {
+                return `Math.tan(${p1} * Math.PI / 180)`;
+            });
+            
     
             let result = eval(expression);
             let history_data = "• " + Answers.value + "  =  " + result;
