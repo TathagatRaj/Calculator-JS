@@ -320,12 +320,19 @@
             expression = expression.replace(/x/g, '*');
             expression = expression.replace(/√(\w+)/g, 'Math.sqrt($1)');
             expression = expression.replace(/π/g, 'Math.PI');
-            expression = expression.replace(/sin(\w+)/g, 'Math.sin($1)');
-            expression = expression.replace(/cos(\w+)/g, 'Math.cos($1)');
-            expression = expression.replace(/tan(\w+)/g, 'Math.tan($1)');
             expression = expression.replace(/log(\w+)/g, 'Math.log10($1)');
             expression = expression.replace(/%/g, '/100');
-            expression = expression.replace(/ to the power 2/g, '**2')
+            expression = expression.replace(/ to the power 2/g, '**2');
+            expression = expression.replace(/sin(\d+)/g, function(match, p1) {
+                return `Math.sin(${p1} * Math.PI / 180)`;
+            });
+            expression = expression.replace(/cos(\d+)/g, function(match, p1) {
+                return `Math.cos(${p1} * Math.PI / 180)`;
+            });
+            expression = expression.replace(/tan(\d+)/g, function(match, p1) {
+                return `Math.tan(${p1} * Math.PI / 180)`;
+            });
+            
     
             let result = eval(expression);
             let history_data = "• " + Answers.value + "  =  " + result;
